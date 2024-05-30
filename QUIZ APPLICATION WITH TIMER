@@ -1,0 +1,75 @@
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class QuizGame {
+    private static final int QUESTION_TIMEOUT = 30; // Time limit for each question in seconds
+    private static final String[] QUESTIONS = {
+        "What is the capital of France?",
+        "Which planet is known as the Red Planet?",
+        "Who is the author of 'To Kill a Mockingbird'?",
+        "What is the chemical symbol for water?",
+        "What year did the Titanic sink?"
+    };
+    private static final String[][] OPTIONS = {
+        {"A. Paris", "B. London", "C. Berlin", "D. Rome"},
+        {"A. Jupiter", "B. Mars", "C. Venus", "D. Saturn"},
+        {"A. Ernest Hemingway", "B. Harper Lee", "C. Mark Twain", "D. J.K. Rowling"},
+        {"A. H2O", "B. CO2", "C. O2", "D. NaCl"},
+        {"A. 1909", "B. 1912", "C. 1915", "D. 1920"}
+    };
+    private static final char[] ANSWERS = {'A', 'B', 'B', 'A', 'B'};
+    private static int score = 0;
+    private static int questionNumber = 0;
+    private static Timer timer = new Timer();
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Welcome to the Quiz Game!");
+
+        for (int i = 0; i < QUESTIONS.length; i++) {
+            displayQuestion(i);
+            waitForAnswer(scanner);
+        }
+
+        displayResult();
+
+        scanner.close();
+    }
+
+    private static void displayQuestion(int index) {
+    System.out.println("\nQuestion " + (index + 1) + ": " + QUESTIONS[index]);
+    for (String option : OPTIONS[index]) {
+        System.out.println(option);
+    }
+    Timer questionTimer = new Timer(); // Create a new instance of Timer for each question
+    questionTimer.schedule(new TimerTask() {
+        @Override
+        public void run() {
+            System.out.println("\nTime's up!");
+            displayResult();
+            System.exit(0);
+        }
+    }, QUESTION_TIMEOUT * 1000);
+}
+
+
+    private static void waitForAnswer(Scanner scanner) {
+        System.out.print("\nEnter your answer: ");
+        char userAnswer = Character.toUpperCase(scanner.next().charAt(0));
+        timer.cancel();
+        if (userAnswer == ANSWERS[questionNumber]) {
+            System.out.println("Correct!");
+            score++;
+        } else {
+            System.out.println("Incorrect! The correct answer is: " + ANSWERS[questionNumber]);
+        }
+        questionNumber++;
+    }
+
+    private static void displayResult() {
+        System.out.println("\nQuiz ended.");
+        System.out.println("Your final score: " + score + " out of " + QUESTIONS.length);
+    }
+}
